@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html style="height:100%">
+  <head>
+    <meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css"/>
+	<link rel="stylesheet" type="text/css" href="css/spectrum.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<link rel="stylesheet" href="css/picker.css" type="text/css" />
+
+	<script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
+  </head>
+  <body style="height:100%">
+	<script type="text/javascript" src="js/bootstrap.js"></script>
+	<div class="container" style="height:100%">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="jumbotron">
+					<div class="btn-group">
+					  <button type="button" class="btn btn-default" onclick="Init();">LED-Control</button>
+					  <button type="button" class="btn btn-default" onclick="Off();">OFF</button>
+					  <button type="button" class="btn btn-default" onclick="On();">ON</button>
+					  <button type="button" class="btn btn-default" onclick="ColorFlash();">FLASH</button>
+					  <button id="btnSwitchMode" type="button" class="btn btn-default" onclick="SwitchMode();">Instant</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" style="height:55%">
+			<div class="col-xs-12" style="height:100%">
+					<!-- colorpicker element -->
+					<div class="colorpicker">
+						<div class="controls">
+							<!--
+							<div><label>R</label> <input type="text" id="rVal" /></div>
+							<div><label>G</label> <input type="text" id="gVal" /></div>
+							<div><label>B</label> <input type="text" id="bVal" /></div>
+							-->
+							<div><label>HEX/</label><label>RGB</label> <input type="text" id="rgbVal" /> <input type="text" id="hexVal" /></div>
+					<div class="preview"></div>
+						</div>
+						<canvas id="picker" var="5"></canvas>
+					</div>
+				<!--
+					<form action="" id="#pickerform">
+					  <div class="form-item"><label for="color">Color:</label><input type="text" id="color" name="color" value="#123456" /></div><div id="picker"></div>
+					</form>
+				-->
+			</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+	    var colorMode = 0;
+		
+		function Init() {
+			$.get("http://192.168.1.109:4221/ledservice/SetPorts?red=23&green=18&blue=24", null, "json");
+		}
+		
+		function Off() {
+			$.get("http://192.168.1.109:4221/ledservice/AllOff", null, "json");
+		}
+
+		function On() {
+			$.get("http://192.168.1.109:4221/ledservice/AllOn", null, "json");
+		}
+
+		function ColorFlash() {
+			$.get("http://192.168.1.109:4221/ledservice/ColorFlash?ms=1000", null, "json");
+		}
+		
+		function SwitchMode() {
+		    colorMode = (++colorMode%3);
+			var uri = "http://192.168.1.109:4221/ledservice/SetColorMode?mode=" + colorMode;
+			
+			switch(colorMode){
+				case 0:
+					$('#btnSwitchMode').html("Instant");
+					break;
+				case 1:
+					$('#btnSwitchMode').html("Fade");
+					break;
+				case 2:
+					$('#btnSwitchMode').html("Fade over black");
+					break;
+			}
+			
+			$.get(uri, null, "json");
+		}
+	</script>
+	<script type="text/javascript" src="js/script.js"></script>
+  </body>
+</html>

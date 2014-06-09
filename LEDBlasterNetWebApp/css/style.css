@@ -1,0 +1,35 @@
+body {
+	background-color: #333;
+}
+
+h2 {
+	margin: 0 auto;
+}
+
+.jumbotron {
+	margin: 5px 0;
+	padding: 5px;
+}
+
+.sp-replacer{
+	width:100%;
+}
+
+.sp-container{
+	width:60%;
+}
+
+.sp-preview {
+	width:100%;
+	height: 100px;
+}
+
+.sp-picker-container {
+	height: 50%;
+	width: 95%;
+}
+
+.color-picker{
+	margin-top: 20px;
+	width:100%;
+}
