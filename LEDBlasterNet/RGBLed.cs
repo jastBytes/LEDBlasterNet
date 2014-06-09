@@ -64,6 +64,7 @@ namespace LEDBlasterNet
         }
 
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void SetColor(float r, float g, float b)
         {
             var rInt = (int)(r * 255);
@@ -72,12 +73,15 @@ namespace LEDBlasterNet
 
             SetColor(rInt, gInt, bInt);
         }
+
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void SetColor(int r, int g, int b)
         {
             var color = Color.FromArgb(r, g, b);
             SetColor(color);
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void SetColor(string htmlColor)
         {
             Console.WriteLine(htmlColor);
@@ -92,6 +96,7 @@ namespace LEDBlasterNet
             _runner.Start();
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void SetColor(Color color, double luminance = 1)
         {
             switch (CurrentMode)
@@ -154,6 +159,7 @@ namespace LEDBlasterNet
                     try
                     {
                         FadeTo(ColorHelper.GetRandomColor(), ms);
+                        Thread.Sleep(ms);
                     }
                     catch (ThreadInterruptedException ex)
                     {
@@ -204,6 +210,7 @@ namespace LEDBlasterNet
 
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void FadeTo(Color color, int ms)
         {
             SetColorInstant(CurrentColor);
@@ -217,6 +224,7 @@ namespace LEDBlasterNet
             SetColorInstant(color);
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void PwmColor(float r, float g, float b)
         {
             PiBlaster.Set(PinRed, r);
@@ -226,6 +234,5 @@ namespace LEDBlasterNet
             ValGreen = g;
             ValBlue = b;
         }
-
     }
 }

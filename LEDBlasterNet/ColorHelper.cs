@@ -19,7 +19,6 @@ namespace LEDBlasterNet
         {
             var rand = (float)(GetRandomNextDouble(0, 360));
             var color = HSBtoRGB(255, rand, 1f, 0.5f);
-            Console.WriteLine("RandColor(R,G,B): {0},{1},{2}", color.R, color.G, color.B);
             return color;
         }
         private static double GetRandomNextDouble(double min, double max)
