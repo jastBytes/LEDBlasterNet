@@ -12,7 +12,6 @@ namespace LEDBlasterNet
     public class RGBLed
     {
         private Thread _runner;
-        private readonly Random _random;
         public enum ColorChangeMode
         {
             Instant = 0,
@@ -34,7 +33,6 @@ namespace LEDBlasterNet
         public RGBLed(int red, int green, int blue)
         {
             CurrentMode = ColorChangeMode.Instant;
-            _random = new Random();
 
             PinRed = red;
             PinGreen = green;
@@ -43,12 +41,14 @@ namespace LEDBlasterNet
             AllOff();
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void AllOff()
         {
             CancelCurrentTask();
             PwmColor(0, 0, 0);
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void AllOn()
         {
             CancelCurrentTask();
@@ -153,7 +153,7 @@ namespace LEDBlasterNet
                 {
                     try
                     {
-                        FadeTo(GetRandomColor(), ms);
+                        FadeTo(ColorHelper.GetRandomColor(), ms);
                     }
                     catch (ThreadInterruptedException ex)
                     {
@@ -161,7 +161,6 @@ namespace LEDBlasterNet
                         break;
                     }
                 }
-                AllOff();
             });
         }
 
@@ -173,7 +172,7 @@ namespace LEDBlasterNet
             {
                 while (Thread.CurrentThread.IsAlive)
                 {
-                    SetColorInstant(GetRandomColor());
+                    SetColorInstant(ColorHelper.GetRandomColor());
                     try
                     {
                         Thread.Sleep(ms);
@@ -184,7 +183,6 @@ namespace LEDBlasterNet
                         break;
                     }
                 }
-                AllOff();
             });
         }
 
@@ -206,11 +204,6 @@ namespace LEDBlasterNet
 
         }
 
-        public Color GetRandomColor()
-        {
-            return Color.FromArgb(_random.Next(255), _random.Next(255), _random.Next(255));
-        }
-
         public void FadeTo(Color color, int ms)
         {
             SetColorInstant(CurrentColor);
@@ -218,7 +211,7 @@ namespace LEDBlasterNet
             var targetHsbColor = ColorHelper.RGBtoHSB(color);
             for (var i = 0; i < ms; i++)
             {
-                SetColorInstant(ColorHelper.HSBtoRGB(1, (float)(currentHsbColor.Hue + (i * (targetHsbColor.Hue - currentHsbColor.Hue) / ms)), (float)(currentHsbColor.Saturation + (i * (targetHsbColor.Saturation - currentHsbColor.Saturation) / ms)), (float)(currentHsbColor.Brightness + (i * (targetHsbColor.Brightness - currentHsbColor.Brightness) / ms))));
+                SetColorInstant(ColorHelper.HSBtoRGB(255, (float)(currentHsbColor.Hue + (i * (targetHsbColor.Hue - currentHsbColor.Hue) / ms)), (float)(currentHsbColor.Saturation + (i * (targetHsbColor.Saturation - currentHsbColor.Saturation) / ms)), (float)(currentHsbColor.Brightness + (i * (targetHsbColor.Brightness - currentHsbColor.Brightness) / ms))));
                 Thread.Sleep(1);
             }
             SetColorInstant(color);
