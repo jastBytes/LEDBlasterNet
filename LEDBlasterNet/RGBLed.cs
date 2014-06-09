@@ -97,7 +97,7 @@ namespace LEDBlasterNet
             switch (CurrentMode)
             {
                 case ColorChangeMode.Fade:
-                    //FadeTo(color, 300);
+                    FadeTo(color, 300);
                     break;
                 case ColorChangeMode.FadeOverBlack:
                     FadeToBlack(300);
@@ -111,7 +111,7 @@ namespace LEDBlasterNet
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        private void SetColorInstant(Color color, double luminance)
+        private void SetColorInstant(Color color, double luminance = 1)
         {
             this.CurrentColor = color;
             var rPwm = (float)(color.R * luminance) / 255.0f;
@@ -129,28 +129,43 @@ namespace LEDBlasterNet
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void FadeToBlack(int ms)
         {
-            var stepSize = 1.0f / ms;
-            SetColor(CurrentColor);
-            for (var intensity = 1.0f; intensity > 0; intensity -= stepSize)
+            CancelCurrentTask();
+            Run(delegate()
             {
-                SetColorInstant(CurrentColor, intensity);
-                Thread.Sleep(1);
-            }
-            AllOff();
+                var stepSize = 1.0f / ms;
+                SetColor(CurrentColor);
+                for (var intensity = 1.0f; intensity > 0; intensity -= stepSize)
+                {
+                    SetColorInstant(CurrentColor, intensity);
+                    Thread.Sleep(1);
+                }
+                AllOff();
+            });
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void Colorfade(int ms)
         {
-            var stepSize = 1.0f / ms;
-            SetColor(CurrentColor);
-            for (var intensity = 1.0f; intensity > 0; intensity -= stepSize)
+            CancelCurrentTask();
+            Run(delegate()
             {
-                SetColor(CurrentColor, intensity);
-                Thread.Sleep(1);
-            }
-            AllOff();
+                while (Thread.CurrentThread.IsAlive)
+                {
+                    try
+                    {
+                        FadeTo(GetRandomColor(), ms);
+                    }
+                    catch (ThreadInterruptedException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        break;
+                    }
+                }
+                AllOff();
+            });
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public void Colorflash(int ms)
         {
             CancelCurrentTask();
@@ -158,7 +173,7 @@ namespace LEDBlasterNet
             {
                 while (Thread.CurrentThread.IsAlive)
                 {
-                    SetColor(GetRandomColor());
+                    SetColorInstant(GetRandomColor());
                     try
                     {
                         Thread.Sleep(ms);
@@ -170,21 +185,25 @@ namespace LEDBlasterNet
                     }
                 }
                 AllOff();
-            })
-            ;
+            });
         }
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void FadeFromBlack(Color color, int ms)
         {
-            var stepSize = 1.0f / ms;
-            AllOff();
-            for (var intensity = 0f; intensity < 1f; intensity += stepSize)
+            CancelCurrentTask();
+            Run(delegate()
             {
-                SetColorInstant(color, intensity);
-                Thread.Sleep(1);
-            }
-            SetColor(color);
+                var stepSize = 1.0f / ms;
+                AllOff();
+                for (var intensity = 0f; intensity < 1f; intensity += stepSize)
+                {
+                    SetColorInstant(color, intensity);
+                    Thread.Sleep(1);
+                }
+                SetColor(color);
+            });
+
         }
 
         public Color GetRandomColor()
@@ -192,30 +211,18 @@ namespace LEDBlasterNet
             return Color.FromArgb(_random.Next(255), _random.Next(255), _random.Next(255));
         }
 
-        //public void FadeTo(Color color, int ms)
-        //{
-        //    var curRgb = new RGB(CurrentColor.R, CurrentColor.G, CurrentColor.B);
-        //    var curCielCh = curRgb.toCIELCh();
-
-        //    var tempCielCh = curRgb.toCIELCh();
-
-        //    var tarRgb = new RGB(color.R, color.G, color.B);
-        //    var tarCielCh = tarRgb.toCIELCh();
-
-        //    var difference = curCielCh.h - tarCielCh.h;
-        //    var stepSize = difference / ms;
-
-        //    SetColor(CurrentColor);
-        //    for (var h = curCielCh.h; Math.Abs(h - tarCielCh.h) > 0.01; h += stepSize)
-        //    {
-        //        tempCielCh.h = h;
-        //        var tempRgb = tempCielCh.toRGB();
-        //        var tempColor = Color.FromArgb(tempRgb.r, tempRgb.g, tempRgb.b);
-        //        SetColor(tempColor);
-        //        Thread.Sleep(1);
-        //    }
-        //    SetColor(color);
-        //}
+        public void FadeTo(Color color, int ms)
+        {
+            SetColorInstant(CurrentColor);
+            var currentHsbColor = ColorHelper.RGBtoHSB(CurrentColor);
+            var targetHsbColor = ColorHelper.RGBtoHSB(color);
+            for (var i = 0; i < ms; i++)
+            {
+                SetColorInstant(ColorHelper.HSBtoRGB(1, (float)(currentHsbColor.Hue + (i * (targetHsbColor.Hue - currentHsbColor.Hue) / ms)), (float)(currentHsbColor.Saturation + (i * (targetHsbColor.Saturation - currentHsbColor.Saturation) / ms)), (float)(currentHsbColor.Brightness + (i * (targetHsbColor.Brightness - currentHsbColor.Brightness) / ms))));
+                Thread.Sleep(1);
+            }
+            SetColorInstant(color);
+        }
 
         public void PwmColor(float r, float g, float b)
         {

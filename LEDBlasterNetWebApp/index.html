@@ -20,9 +20,9 @@
 				<div class="jumbotron">
 					<div class="btn-group">
 					  <button type="button" class="btn btn-default" onclick="Init();">LED-Control</button>
-					  <button type="button" class="btn btn-default" onclick="Off();">OFF</button>
-					  <button type="button" class="btn btn-default" onclick="On();">ON</button>
+					  <button id="btnToggleOn" type="button" class="btn btn-default" onclick="ToggleOn();">ON</button>
 					  <button type="button" class="btn btn-default" onclick="ColorFlash();">FLASH</button>
+					  <button type="button" class="btn btn-default" onclick="ColorFade();">FADE</button>
 					  <button id="btnSwitchMode" type="button" class="btn btn-default" onclick="SwitchMode();">Instant</button>
 					</div>
 				</div>
@@ -54,6 +54,7 @@
 	
 	<script type="text/javascript">
 	    var colorMode = 0;
+		var isOn = false;
 		
 		function Init() {
 			$.get("http://192.168.1.109:4221/ledservice/SetPorts?red=23&green=18&blue=24", null, "json");
@@ -66,9 +67,25 @@
 		function On() {
 			$.get("http://192.168.1.109:4221/ledservice/AllOn", null, "json");
 		}
+		
+		function ToggleOn() {
+			if(isOn){
+				Off();
+				isOn = false;
+				$('#btnToggleOn').html("OFF");
+			} else {
+				On();
+				isOn = true;
+				$('#btnToggleOn').html("ON");
+			}
+		}
 
 		function ColorFlash() {
 			$.get("http://192.168.1.109:4221/ledservice/ColorFlash?ms=1000", null, "json");
+		}
+
+		function ColorFade() {
+			$.get("http://192.168.1.109:4221/ledservice/ColorFade?ms=300", null, "json");
 		}
 		
 		function SwitchMode() {

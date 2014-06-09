@@ -57,6 +57,13 @@ namespace LEDBlasterREST
             return true;
         }
 
+        public bool ColorFade(int ms)
+        {
+            if (_rgbLed == null) throw new InvalidOperationException("Not initialized. Call SetPorts(r,g,b) first.");
+            _rgbLed.Colorfade(ms);
+            return true;
+        }
+
         public bool SetHtmlColor(string htmlColor)
         {
             if (_rgbLed == null) throw new InvalidOperationException("Not initialized. Call SetPorts(r,g,b) first.");

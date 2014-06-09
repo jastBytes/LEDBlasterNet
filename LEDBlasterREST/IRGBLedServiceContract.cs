@@ -30,6 +30,10 @@ namespace LEDBlasterREST
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedResponse)]
+        bool ColorFade(int ms);
+
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.WrappedResponse)]
         bool SetHtmlColor(string htmlColor);
 
         [OperationContract]
