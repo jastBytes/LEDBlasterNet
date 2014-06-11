@@ -218,7 +218,7 @@ namespace LEDBlasterNet
             var targetHsbColor = ColorHelper.RGBtoHSB(color);
             for (var i = 0; i < ms; i++)
             {
-                SetColorInstant(ColorHelper.HSBtoRGB(255, (float)(currentHsbColor.Hue + (i * (targetHsbColor.Hue - currentHsbColor.Hue) / ms)), (float)(currentHsbColor.Saturation + (i * (targetHsbColor.Saturation - currentHsbColor.Saturation) / ms)), (float)(currentHsbColor.Brightness + (i * (targetHsbColor.Brightness - currentHsbColor.Brightness) / ms))));
+                SetColorInstant(ColorHelper.HSBtoRGB(255, (float)(currentHsbColor.Hue + (i * (targetHsbColor.Hue - currentHsbColor.Hue) / ms)), 1, (float)(currentHsbColor.Brightness + (i * (targetHsbColor.Brightness - currentHsbColor.Brightness) / ms))));
                 Thread.Sleep(1);
             }
             SetColorInstant(color);
