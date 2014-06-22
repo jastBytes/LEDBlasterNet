@@ -7,6 +7,8 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using LEDBlasterREST;
+using Mono.Unix;
+using Mono.Unix.Native;
 
 namespace LEDBlasterServiceHost
 {
@@ -32,8 +34,21 @@ namespace LEDBlasterServiceHost
                 _serviceHost.Closing += serviceHost_Closing;
                 _serviceHost.Open();
                 Console.WriteLine("Your IP-Address: " + ipAddress);
-                Console.WriteLine("Press ENTER to end service");
-                Console.ReadLine();
+
+                UnixSignal[] signals = new UnixSignal[] { 
+                    new UnixSignal(Signum.SIGINT), 
+                    new UnixSignal(Signum.SIGTERM), 
+                };
+
+                // Wait for a unix signal
+                var exit = false;
+                while (!exit)
+                {
+                    var id = UnixSignal.WaitAny(signals);
+                    if (id < 0 || id >= signals.Length) continue;
+                    if (signals[id].IsSet) exit = true;
+                }
+
                 _serviceHost.Close();
             }
             catch (Exception ex)

@@ -97,5 +97,17 @@ namespace LEDBlasterREST
         {
             return ColorTranslator.ToHtml(_rgbLed.CurrentColor);
         }
+
+        public bool Strobe(int ms)
+        {
+            _rgbLed.Strobe(ms);
+            return true;
+        }
+
+        public bool ColorStrobe(int ms)
+        {
+            _rgbLed.Colorstrobe(ms);
+            return true;
+        }
     }
 }

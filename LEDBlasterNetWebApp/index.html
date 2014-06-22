@@ -19,11 +19,17 @@
 			<div class="col-xs-12">
 				<div class="jumbotron">
 					<div class="btn-group">
-					  <button type="button" class="btn btn-default" onclick="Init();">LED-Control</button>
-					  <button id="btnToggleOn" type="button" class="btn btn-default" onclick="ToggleOn();">ON</button>
-					  <button type="button" class="btn btn-default" onclick="ColorFlash();">FLASH</button>
-					  <button type="button" class="btn btn-default" onclick="ColorFade();">FADE</button>
+					  <button type="button" class="btn btn-default" onclick="Init();">Init</button>
+					  <button id="btnToggleOn" type="button" class="btn btn-default" onclick="ToggleOn();">On</button>
 					  <button id="btnSwitchMode" type="button" class="btn btn-default" onclick="SwitchMode();">Instant</button>
+					</div>
+					<div class="btn-group">
+					  <button type="button" class="btn btn-default" onclick="ColorFlash();">Colorflash</button>
+					  <button type="button" class="btn btn-default" onclick="ColorFade();">Colorfade</button>
+					</div>
+					<div class="btn-group">
+					  <button type="button" class="btn btn-default" onclick="ColorStrobe();">Colorstrobe</button>
+					  <button type="button" class="btn btn-default" onclick="Strobe();">Strobe</button>
 					</div>
 				</div>
 			</div>
@@ -72,11 +78,11 @@
 			if(isOn){
 				Off();
 				isOn = false;
-				$('#btnToggleOn').html("OFF");
+				$('#btnToggleOn').html("Off");
 			} else {
 				On();
 				isOn = true;
-				$('#btnToggleOn').html("ON");
+				$('#btnToggleOn').html("On");
 			}
 		}
 
@@ -86,6 +92,14 @@
 
 		function ColorFade() {
 			$.get("http://192.168.1.109:4221/ledservice/ColorFade?ms=500", null, "json");
+		}
+		
+		function ColorStrobe() {
+			$.get("http://192.168.1.109:4221/ledservice/ColorStrobe?ms=30", null, "json");
+		}
+		
+		function Strobe() {
+			$.get("http://192.168.1.109:4221/ledservice/Strobe?ms=30", null, "json");
 		}
 		
 		function SwitchMode() {
