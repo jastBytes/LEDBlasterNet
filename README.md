@@ -2,6 +2,7 @@ LEDBlasterNet
 =============
 
 This project uses the GPIO pins of a Raspberry PI to control a rgb led stripe. It provides a C# webservice in mono and a small webapp as frontend.
+An example of what can be done using this is shown here: http://youtu.be/H8I5YCeRhQg
 
 This project is based on the excellent work of Tomas Sarlandie pi-blaster: https://github.com/sarfata/pi-blaster
 and the modifications/updates made by Michael Vitousek: https://github.com/mvitousek/pi-blaster
