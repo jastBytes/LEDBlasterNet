@@ -8,4 +8,4 @@ and the modifications/updates made by Michael Vitousek: https://github.com/mvito
 
 Pi-blaster project is based on the excellent work of Richard Hirst for ServoBlaster: https://github.com/richardghirst/PiBits
 
-This project is alos based on a C# example contributed by [Vili Volcini](https://plus.google.com/109312219443477679717/posts). It is available on [this stackoverflow thread](http://stackoverflow.com/questions/17241071/writing-to-fifo-file-linux-monoc).
+This project is also based on a C# example contributed by [Vili Volcini](https://plus.google.com/109312219443477679717/posts). It is available on [this stackoverflow thread](http://stackoverflow.com/questions/17241071/writing-to-fifo-file-linux-monoc).
