@@ -141,7 +141,6 @@ namespace LEDBlasterNet
                     try
                     {
                         FadeTo(ColorHelper.GetRandomColor(), ms);
-                        Thread.Sleep(ms);
                     }
                     catch (ThreadInterruptedException ex)
                     {
@@ -251,16 +250,34 @@ namespace LEDBlasterNet
         public void FadeTo(Color color, int ms, bool setCurrentColor = true)
         {
             SetColorInstant(CurrentColor);
-            var currentHsbColor = ColorHelper.RGBtoHSB(CurrentColor);
-            var targetHsbColor = ColorHelper.RGBtoHSB(color);
+            ms /= 10;
             for (var i = 0; i < ms; i++)
             {
                 if (!Thread.CurrentThread.IsAlive) return;
-                SetColorInstant(ColorHelper.HSBtoRGB(255, (float)(currentHsbColor.Hue + (i * (targetHsbColor.Hue - currentHsbColor.Hue) / ms)), 1, (float)(currentHsbColor.Brightness + (i * (targetHsbColor.Brightness - currentHsbColor.Brightness) / ms))));
-                Thread.Sleep(1);
+                var r = CurrentColor.R + (i * (color.R - CurrentColor.R) / ms);
+                var g = CurrentColor.G + (i * (color.G - CurrentColor.G) / ms);
+                var b = CurrentColor.B + (i * (color.B - CurrentColor.B) / ms);
+                SetColorInstant(Color.FromArgb(r, g, b));
+                Thread.Sleep(10);
             }
             SetColorInstant(color);
         }
+
+        //[MethodImpl(MethodImplOptions.Synchronized)]
+        //public void FadeTo(Color color, int ms, bool setCurrentColor = true)
+        //{
+        //    SetColorInstant(CurrentColor);
+        //    var currentHsbColor = ColorHelper.RGBtoHSB(CurrentColor);
+        //    var targetHsbColor = ColorHelper.RGBtoHSB(color);
+
+        //    for (var i = 0; i < ms; i++)
+        //    {
+        //        if (!Thread.CurrentThread.IsAlive) return;
+        //        SetColorInstant(ColorHelper.HSBtoRGB(255, (float)(currentHsbColor.Hue + (i * (targetHsbColor.Hue - currentHsbColor.Hue) / ms)), 1, (float)(currentHsbColor.Brightness + (i * (targetHsbColor.Brightness - currentHsbColor.Brightness) / ms))));
+        //        Thread.Sleep(1);
+        //    }
+        //    SetColorInstant(color);
+        //}
 
         [MethodImpl(MethodImplOptions.Synchronized)]
         public void PwmColor(float r, float g, float b)
