@@ -140,7 +140,7 @@ namespace LEDBlasterNet
                 {
                     try
                     {
-                        FadeTo(ColorHelper.GetRandomColor(), ms);
+                        FadeTo(ColorHelper.GetRandomColor(45), ms);
                     }
                     catch (ThreadInterruptedException ex)
                     {
@@ -159,7 +159,7 @@ namespace LEDBlasterNet
             {
                 while (Thread.CurrentThread.IsAlive)
                 {
-                    SetColorInstant(ColorHelper.GetRandomColor());
+                    SetColorInstant(ColorHelper.GetRandomColor(45));
                     try
                     {
                         Thread.Sleep(ms);
@@ -181,7 +181,7 @@ namespace LEDBlasterNet
             {
                 while (Thread.CurrentThread.IsAlive)
                 {
-                    SetColorInstant(ColorHelper.GetRandomColor());
+                    SetColorInstant(ColorHelper.GetRandomColor(45));
                     try
                     {
                         Thread.Sleep(ms);

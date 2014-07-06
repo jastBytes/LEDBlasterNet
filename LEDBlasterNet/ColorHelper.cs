@@ -9,18 +9,27 @@ namespace LEDBlasterNet
     public static class ColorHelper
     {
         private static readonly Random _random;
+        private static float lastRand;
 
         static ColorHelper()
         {
             _random = new Random();
         }
 
-        public static Color GetRandomColor()
+        public static Color GetRandomColor(int minDistance = 0)
         {
+            if (minDistance > 259) throw new ArgumentException("minDistance must be in range [0,360).");
+
             var rand = (float)(GetRandomNextDouble(0, 360));
+            while (Math.Abs(lastRand - rand) < minDistance)
+            {
+                rand = (float)(GetRandomNextDouble(0, 360));
+            }
             var color = HSBtoRGB(255, rand, 1f, 0.5f);
+            lastRand = rand;
             return color;
         }
+
         private static double GetRandomNextDouble(double min, double max)
         {
             return min + _random.NextDouble() * (max - min);
