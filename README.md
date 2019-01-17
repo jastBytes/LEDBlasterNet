@@ -14,8 +14,13 @@ This project is also based on a C# example contributed by [Vili Volcini](https:/
 Example Hardware
 ================
 3x IRLZ 34N MOSFET N-Ch TO-220AB 55V 27A (a bit overkill)
+
 3x metal layer resistor 10,0 K-Ohm (for pulldown)
+
 1x stripboard 1x SET LED 5050 SMD RGB Stripe 12V incl. power supply
+
 Some wires to connect everything 
+
+
 
 Fritzing layout: http://goo.gl/f5va8T
